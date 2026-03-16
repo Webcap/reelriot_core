@@ -68,6 +68,17 @@ class Endpoints {
         '&language=$language&page=$page';
   }
 
+  static String movieRecommendationsUrl(String tmdbBaseUrl, String tmdbApiKey,
+      int movieId, int page, String language) {
+    return '$tmdbBaseUrl/movie/$movieId/recommendations?api_key=$tmdbApiKey'
+        '&language=$language&page=$page';
+  }
+
+  static String movieCreditsUrl(
+      String tmdbBaseUrl, String tmdbApiKey, int movieId, String language) {
+    return '$tmdbBaseUrl/movie/$movieId/credits?api_key=$tmdbApiKey&language=$language';
+  }
+
   // --- TV ---
   static String discoverTvUrl(
       String tmdbBaseUrl, String tmdbApiKey, int page, String language) {
@@ -134,6 +145,17 @@ class Endpoints {
       int page, String language) {
     return '$tmdbBaseUrl/tv/$tvId/similar?api_key=$tmdbApiKey'
         '&language=$language&page=$page';
+  }
+
+  static String tvRecommendationsUrl(String tmdbBaseUrl, String tmdbApiKey, int tvId,
+      int page, String language) {
+    return '$tmdbBaseUrl/tv/$tvId/recommendations?api_key=$tmdbApiKey'
+        '&language=$language&page=$page';
+  }
+
+  static String tvCreditsUrl(
+      String tmdbBaseUrl, String tmdbApiKey, int tvId, String language) {
+    return '$tmdbBaseUrl/tv/$tvId/credits?api_key=$tmdbApiKey&language=$language';
   }
 
   // --- Caffeine API (streaming) ---
