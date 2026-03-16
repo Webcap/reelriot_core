@@ -158,6 +158,17 @@ class Endpoints {
     return '$tmdbBaseUrl/tv/$tvId/credits?api_key=$tmdbApiKey&language=$language';
   }
 
+  // --- Person ---
+  static String personDetailsUrl(
+      String tmdbBaseUrl, String tmdbApiKey, int personId, String language) {
+    return '$tmdbBaseUrl/person/$personId?api_key=$tmdbApiKey&language=$language';
+  }
+
+  static String personCombinedCreditsUrl(
+      String tmdbBaseUrl, String tmdbApiKey, int personId, String language) {
+    return '$tmdbBaseUrl/person/$personId/combined_credits?api_key=$tmdbApiKey&language=$language';
+  }
+
   // --- Caffeine API (streaming) ---
   /// Config endpoint.
   static String configUrl(String caffeineApiUrl) {
