@@ -6,6 +6,7 @@ class MovieListItem {
   final String? backdropPath;
   final String? overview;
   final num? voteAverage;
+  final String? mediaType;
   final String? releaseDate;
 
   MovieListItem({
@@ -15,6 +16,7 @@ class MovieListItem {
     this.backdropPath,
     this.overview,
     this.voteAverage,
+    this.mediaType,
     this.releaseDate,
   });
 
@@ -26,6 +28,7 @@ class MovieListItem {
       backdropPath: json['backdrop_path'] as String?,
       overview: json['overview'] as String?,
       voteAverage: json['vote_average'] as num?,
+      mediaType: json['media_type'] as String?,
       releaseDate: json['release_date'] as String?,
     );
   }
@@ -66,6 +69,7 @@ class MovieDetail {
   final String? backdropPath;
   final String? overview;
   final num? voteAverage;
+  final String? mediaType;
   final String? releaseDate;
   final int? runtime;
   final List<Map<String, dynamic>>? genres;
@@ -77,6 +81,7 @@ class MovieDetail {
     this.backdropPath,
     this.overview,
     this.voteAverage,
+    this.mediaType,
     this.releaseDate,
     this.runtime,
     this.genres,
@@ -91,6 +96,7 @@ class MovieDetail {
       backdropPath: json['backdrop_path'] as String?,
       overview: json['overview'] as String?,
       voteAverage: json['vote_average'] as num?,
+      mediaType: json['media_type'] as String?,
       releaseDate: json['release_date'] as String?,
       runtime: json['runtime'] as int?,
       genres: g is List
