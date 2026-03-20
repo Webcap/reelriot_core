@@ -8,6 +8,7 @@ class MovieListItem {
   final num? voteAverage;
   final String? mediaType;
   final String? releaseDate;
+  final num? popularity;
 
   MovieListItem({
     required this.id,
@@ -18,6 +19,7 @@ class MovieListItem {
     this.voteAverage,
     this.mediaType,
     this.releaseDate,
+    this.popularity,
   });
 
   factory MovieListItem.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class MovieListItem {
       voteAverage: json['vote_average'] as num?,
       mediaType: json['media_type'] as String?,
       releaseDate: json['release_date'] as String?,
+      popularity: json['popularity'] as num?,
     );
   }
 }
@@ -71,6 +74,7 @@ class MovieDetail {
   final num? voteAverage;
   final String? mediaType;
   final String? releaseDate;
+  final num? popularity;
   final int? runtime;
   final List<Map<String, dynamic>>? genres;
 
@@ -83,6 +87,7 @@ class MovieDetail {
     this.voteAverage,
     this.mediaType,
     this.releaseDate,
+    this.popularity,
     this.runtime,
     this.genres,
   });
@@ -98,6 +103,7 @@ class MovieDetail {
       voteAverage: json['vote_average'] as num?,
       mediaType: json['media_type'] as String?,
       releaseDate: json['release_date'] as String?,
+      popularity: json['popularity'] as num?,
       runtime: json['runtime'] as int?,
       genres: g is List
           ? (g).map((e) => Map<String, dynamic>.from(e as Map)).toList()

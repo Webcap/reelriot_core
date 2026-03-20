@@ -7,6 +7,7 @@ class TvListItem {
   final String? overview;
   final num? voteAverage;
   final String? firstAirDate;
+  final num? popularity;
 
   TvListItem({
     required this.id,
@@ -16,6 +17,7 @@ class TvListItem {
     this.overview,
     this.voteAverage,
     this.firstAirDate,
+    this.popularity,
   });
 
   factory TvListItem.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class TvListItem {
       overview: json['overview'] as String?,
       voteAverage: json['vote_average'] as num?,
       firstAirDate: json['first_air_date'] as String?,
+      popularity: json['popularity'] as num?,
     );
   }
 }
@@ -67,6 +70,7 @@ class TvShowDetail {
   final String? overview;
   final num? voteAverage;
   final String? firstAirDate;
+  final num? popularity;
   final int? numberOfSeasons;
   final List<Map<String, dynamic>>? genres;
 
@@ -78,6 +82,7 @@ class TvShowDetail {
     this.overview,
     this.voteAverage,
     this.firstAirDate,
+    this.popularity,
     this.numberOfSeasons,
     this.genres,
   });
@@ -92,6 +97,7 @@ class TvShowDetail {
       overview: json['overview'] as String?,
       voteAverage: json['vote_average'] as num?,
       firstAirDate: json['first_air_date'] as String?,
+      popularity: json['popularity'] as num?,
       numberOfSeasons: json['number_of_seasons'] as int?,
       genres: g is List
           ? (g).map((e) => Map<String, dynamic>.from(e as Map)).toList()

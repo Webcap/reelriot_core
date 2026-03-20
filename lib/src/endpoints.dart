@@ -6,9 +6,9 @@ class Endpoints {
   /// TMDB base is https://api.themoviedb.org/3
   /// [tmdbApiKey] from env / config.
   static String discoverMoviesUrl(
-      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders}) {
+      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc'}) {
     String url = '$tmdbBaseUrl/discover/movie?api_key=$tmdbApiKey'
-        '&language=$language&sort_by=popularity.desc&include_video=false&page=$page';
+        '&language=$language&sort_by=$sortBy&include_video=false&page=$page';
     if (withProviders != null) {
       url += '&with_watch_providers=$withProviders&watch_region=US';
     }
@@ -85,9 +85,9 @@ class Endpoints {
 
   // --- TV ---
   static String discoverTvUrl(
-      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders}) {
+      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc'}) {
     String url = '$tmdbBaseUrl/discover/tv?api_key=$tmdbApiKey'
-        '&language=$language&sort_by=popularity.desc&page=$page';
+        '&language=$language&sort_by=$sortBy&page=$page';
     if (withProviders != null) {
       url += '&with_watch_providers=$withProviders&watch_region=US';
     }
