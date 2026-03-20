@@ -77,6 +77,7 @@ class MovieDetail {
   final num? popularity;
   final int? runtime;
   final List<Map<String, dynamic>>? genres;
+  final Map<String, dynamic>? belongsToCollection;
 
   MovieDetail({
     required this.id,
@@ -90,6 +91,7 @@ class MovieDetail {
     this.popularity,
     this.runtime,
     this.genres,
+    this.belongsToCollection,
   });
 
   factory MovieDetail.fromJson(Map<String, dynamic> json) {
@@ -108,6 +110,45 @@ class MovieDetail {
       genres: g is List
           ? (g).map((e) => Map<String, dynamic>.from(e as Map)).toList()
           : null,
+      belongsToCollection: json['belongs_to_collection'] != null
+          ? Map<String, dynamic>.from(json['belongs_to_collection'] as Map)
+          : null,
+    );
+  }
+}
+
+/// Collection of movies (e.g. Avengers Collection).
+class MovieCollection {
+  final int id;
+  final String? name;
+  final String? overview;
+  final String? posterPath;
+  final String? backdropPath;
+  final List<MovieListItem> parts;
+
+  MovieCollection({
+    required this.id,
+    this.name,
+    this.overview,
+    this.posterPath,
+    this.backdropPath,
+    required this.parts,
+  });
+
+  factory MovieCollection.fromJson(Map<String, dynamic> json) {
+    final p = json['parts'];
+    return MovieCollection(
+      id: json['id'] as int,
+      name: json['name'] as String?,
+      overview: json['overview'] as String?,
+      posterPath: json['poster_path'] as String?,
+      backdropPath: json['backdrop_path'] as String?,
+      parts: p is List
+          ? (p)
+              .map((e) => MovieListItem.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList()
+          : [],
     );
   }
 }

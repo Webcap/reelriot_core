@@ -83,6 +83,11 @@ class Endpoints {
     return '$tmdbBaseUrl/movie/$movieId/credits?api_key=$tmdbApiKey&language=$language';
   }
 
+  static String movieCollectionUrl(
+      String tmdbBaseUrl, String tmdbApiKey, int collectionId, String language) {
+    return '$tmdbBaseUrl/collection/$collectionId?api_key=$tmdbApiKey&language=$language';
+  }
+
   // --- TV ---
   static String discoverTvUrl(
       String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc'}) {
