@@ -29,13 +29,21 @@ class CaffeineApiConfig {
   final String? tmdbProxy;
   final String? latestVersion;
   final bool? forcedUpdate;
-
+  final String? tvLatestVersion;
+  final bool? tvForcedUpdate;
+  final String? tvUpdateDownloadUrl;
+  final String? tvUpdateChangelog;
+ 
   CaffeineApiConfig({
     required this.caffeineApiUrl,
     this.consumetUrl,
     this.tmdbProxy,
     this.latestVersion,
     this.forcedUpdate,
+    this.tvLatestVersion,
+    this.tvForcedUpdate,
+    this.tvUpdateDownloadUrl,
+    this.tvUpdateChangelog,
   });
 
   /// Build from raw config map (e.g. from fetchConfig).
@@ -51,6 +59,11 @@ class CaffeineApiConfig {
       latestVersion: _str(map['latest_version']),
       forcedUpdate: map['forced_update'] == true ||
           map['forced_update'].toString().toLowerCase() == 'true',
+      tvLatestVersion: _str(map['tv_latest_version']),
+      tvForcedUpdate: map['tv_forced_update'] == true ||
+          map['tv_forced_update'].toString().toLowerCase() == 'true',
+      tvUpdateDownloadUrl: _str(map['tv_update_download_url']),
+      tvUpdateChangelog: _str(map['tv_update_changelog']),
     );
   }
 
