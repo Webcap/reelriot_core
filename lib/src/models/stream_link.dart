@@ -28,6 +28,7 @@ class ProviderStreamLink {
   final String url;
   final bool isM3U8;
   final String quality;
+  final Map<String, String>? headers;
   final List<SubtitleLink> subtitles;
 
   ProviderStreamLink({
@@ -35,6 +36,7 @@ class ProviderStreamLink {
     required this.url,
     required this.isM3U8,
     required this.quality,
+    this.headers,
     List<SubtitleLink>? subtitles,
   }) : subtitles = subtitles ?? [];
 
@@ -45,6 +47,9 @@ class ProviderStreamLink {
       url: json['url'] as String? ?? '',
       isM3U8: json['isM3U8'] as bool? ?? false,
       quality: json['quality'] as String? ?? 'unknown',
+      headers: json['headers'] != null 
+          ? Map<String, String>.from(json['headers'] as Map) 
+          : null,
       subtitles: subs is List
           ? (subs)
               .map((e) => SubtitleLink.fromJson(
