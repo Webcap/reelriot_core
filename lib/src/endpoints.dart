@@ -6,11 +6,11 @@ class Endpoints {
   /// TMDB base is https://api.themoviedb.org/3
   /// [tmdbApiKey] from env / config.
   static String discoverMoviesUrl(
-      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc'}) {
+      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc', String region = 'US'}) {
     String url = '$tmdbBaseUrl/discover/movie?api_key=$tmdbApiKey'
         '&language=$language&sort_by=$sortBy&include_video=false&page=$page';
     if (withProviders != null) {
-      url += '&with_watch_providers=$withProviders&watch_region=US';
+      url += '&with_watch_providers=$withProviders&watch_region=$region';
     }
     return url;
   }
@@ -27,9 +27,9 @@ class Endpoints {
   }
 
   static String topRatedMoviesUrl(
-      String tmdbBaseUrl, String tmdbApiKey, String language) {
+      String tmdbBaseUrl, String tmdbApiKey, String language, {String region = 'US'}) {
     return '$tmdbBaseUrl/movie/top_rated?api_key=$tmdbApiKey'
-        '&region=US&language=$language';
+        '&region=$region&language=$language';
   }
 
   static String nowPlayingMoviesUrl(
@@ -90,11 +90,11 @@ class Endpoints {
 
   // --- TV ---
   static String discoverTvUrl(
-      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc'}) {
+      String tmdbBaseUrl, String tmdbApiKey, int page, String language, {int? withProviders, String sortBy = 'popularity.desc', String region = 'US'}) {
     String url = '$tmdbBaseUrl/discover/tv?api_key=$tmdbApiKey'
         '&language=$language&sort_by=$sortBy&page=$page';
     if (withProviders != null) {
-      url += '&with_watch_providers=$withProviders&watch_region=US';
+      url += '&with_watch_providers=$withProviders&watch_region=$region';
     }
     return url;
   }
@@ -190,16 +190,22 @@ class Endpoints {
 
   /// Stream movie. Providers: vixsrc, vidsrc, vidzee.
   static String streamMovieUrl(
-      String caffeineApiUrl, String provider, String tmdbId) {
+      String caffeineApiUrl, String provider, String tmdbId, {String? language, String? country}) {
     final base = _b(caffeineApiUrl);
-    return '$base$provider/stream-movie?tmdbId=$tmdbId';
+    String url = '$base$provider/stream-movie?tmdbId=$tmdbId';
+    if (language != null) url += '&language=$language';
+    if (country != null) url += '&country=$country';
+    return url;
   }
 
   /// Stream TV episode.
   static String streamTvUrl(String caffeineApiUrl, String provider,
-      String tmdbId, int season, int episode) {
+      String tmdbId, int season, int episode, {String? language, String? country}) {
     final base = _b(caffeineApiUrl);
-    return '$base$provider/stream-tv?tmdbId=$tmdbId&season=$season&episode=$episode';
+    String url = '$base$provider/stream-tv?tmdbId=$tmdbId&season=$season&episode=$episode';
+    if (language != null) url += '&language=$language';
+    if (country != null) url += '&country=$country';
+    return url;
   }
 
   /// List providers (optional).
