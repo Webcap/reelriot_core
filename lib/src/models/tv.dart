@@ -142,6 +142,7 @@ class TvEpisode {
   final String? overview;
   final String? stillPath;
   final String? airDate;
+  final num? voteAverage;
 
   TvEpisode({
     required this.id,
@@ -151,6 +152,7 @@ class TvEpisode {
     this.overview,
     this.stillPath,
     this.airDate,
+    this.voteAverage,
   });
 
   factory TvEpisode.fromJson(Map<String, dynamic> json) {
@@ -162,6 +164,7 @@ class TvEpisode {
       overview: json['overview'] as String?,
       stillPath: json['still_path'] as String?,
       airDate: json['air_date'] as String?,
+      voteAverage: json['vote_average'] as num?,
     );
   }
 }
