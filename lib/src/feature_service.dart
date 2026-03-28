@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 class FeatureFlagManager {
   static final FeatureFlagManager _instance = FeatureFlagManager._internal();
   factory FeatureFlagManager() => _instance;
+  static FeatureFlagManager get instance => _instance;
   FeatureFlagManager._internal();
 
   Map<String, dynamic> _flags = {};

@@ -188,6 +188,16 @@ class Endpoints {
     return '${_b(caffeineApiUrl)}config';
   }
 
+  /// New structured updates endpoint.
+  static String updatesUrl(String caffeineApiUrl, String platform, {String environment = 'prod'}) {
+    return '${_b(caffeineApiUrl)}v1/updates?platform=$platform&environment=$environment';
+  }
+
+  /// Admin updates endpoint.
+  static String adminUpdatesUrl(String caffeineApiUrl) {
+    return '${_b(caffeineApiUrl)}admin/updates';
+  }
+
   /// Stream movie. Providers: vixsrc, vidsrc, vidzee.
   static String streamMovieUrl(
       String caffeineApiUrl, String provider, String tmdbId, {String? language, String? country}) {

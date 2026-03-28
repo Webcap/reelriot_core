@@ -22,6 +22,26 @@ Future<Map<String, dynamic>> fetchConfig(String caffeineApiUrl) async {
   return data;
 }
 
+/// Fetches structured update info from /v1/updates.
+Future<AppUpdateInfo?> fetchUpdateInfo({
+  required String caffeineApiUrl,
+  required String platform,
+  String environment = 'prod',
+}) async {
+  try {
+    final url = Uri.parse(Endpoints.updatesUrl(caffeineApiUrl, platform, environment: environment));
+    final response = await http.get(url).timeout(const Duration(seconds: 5));
+    
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return AppUpdateInfo.fromMap(data);
+    }
+  } catch (e) {
+    // Silently fail or log, as updates shouldn't block the app usually
+  }
+  return null;
+}
+
 /// Typed config values relevant for TV app (and main app).
 class CaffeineApiConfig {
   final String caffeineApiUrl;
@@ -71,5 +91,38 @@ class CaffeineApiConfig {
     if (v == null) return null;
     final s = v.toString().trim();
     return s.isEmpty ? null : s;
+  }
+}
+
+/// Structured update information model.
+class AppUpdateInfo {
+  final String platform;
+  final String environment;
+  final String latestVersion;
+  final bool isForced;
+  final String? downloadUrl;
+  final String? storeUrl;
+  final String? changelog;
+
+  AppUpdateInfo({
+    required this.platform,
+    required this.environment,
+    required this.latestVersion,
+    required this.isForced,
+    this.downloadUrl,
+    this.storeUrl,
+    this.changelog,
+  });
+
+  factory AppUpdateInfo.fromMap(Map<String, dynamic> map) {
+    return AppUpdateInfo(
+      platform: map['platform'].toString(),
+      environment: map['environment'].toString(),
+      latestVersion: map['latest_version'].toString(),
+      isForced: map['is_forced'] == true,
+      downloadUrl: map['download_url']?.toString(),
+      storeUrl: map['store_url']?.toString(),
+      changelog: map['changelog']?.toString(),
+    );
   }
 }
