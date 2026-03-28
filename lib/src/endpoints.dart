@@ -53,9 +53,9 @@ class Endpoints {
   }
 
   static String moviesForGenreUrl(String tmdbBaseUrl, String tmdbApiKey,
-      int genreId, int page, String language) {
+      int genreId, int page, String language, {String sortBy = 'popularity.desc'}) {
     return '$tmdbBaseUrl/discover/movie?api_key=$tmdbApiKey'
-        '&sort_by=popularity.desc&include_video=false&page=$page'
+        '&sort_by=$sortBy&include_video=false&page=$page'
         '&with_genres=$genreId&language=$language';
   }
 
@@ -135,9 +135,9 @@ class Endpoints {
   }
 
   static String tvShowsForGenreUrl(String tmdbBaseUrl, String tmdbApiKey,
-      int genreId, int page, String language) {
+      int genreId, int page, String language, {String sortBy = 'popularity.desc'}) {
     return '$tmdbBaseUrl/discover/tv?api_key=$tmdbApiKey'
-        '&language=$language&sort_by=popularity.desc&page=$page'
+        '&language=$language&sort_by=$sortBy&page=$page'
         '&with_genres=$genreId';
   }
 
