@@ -6,9 +6,15 @@ import 'endpoints.dart';
 
 /// Fetches app config from caffeine-api GET /config.
 /// Returns raw map; app can read caffeine_api_url, tmdb_proxy, etc.
-Future<Map<String, dynamic>> fetchConfig(String caffeineApiUrl) async {
+Future<Map<String, dynamic>> fetchConfig(String caffeineApiUrl,
+    {String? apiKey}) async {
   final url = Uri.parse(Endpoints.configUrl(caffeineApiUrl));
-  final response = await http.get(url).timeout(
+  final headers = <String, String>{};
+  if (apiKey != null && apiKey.isNotEmpty) {
+    headers['Authorization'] = 'Bearer $apiKey';
+  }
+
+  final response = await http.get(url, headers: headers).timeout(
         const Duration(seconds: 10),
         onTimeout: () => throw Exception('Config fetch timeout'),
       );
@@ -27,11 +33,20 @@ Future<AppUpdateInfo?> fetchUpdateInfo({
   required String caffeineApiUrl,
   required String platform,
   String environment = 'prod',
+  String? apiKey,
 }) async {
   try {
-    final url = Uri.parse(Endpoints.updatesUrl(caffeineApiUrl, platform, environment: environment));
-    final response = await http.get(url).timeout(const Duration(seconds: 5));
-    
+    final url = Uri.parse(
+        Endpoints.updatesUrl(caffeineApiUrl, platform, environment: environment));
+
+    final headers = <String, String>{};
+    if (apiKey != null && apiKey.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $apiKey';
+    }
+
+    final response =
+        await http.get(url, headers: headers).timeout(const Duration(seconds: 5));
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return AppUpdateInfo.fromMap(data);
