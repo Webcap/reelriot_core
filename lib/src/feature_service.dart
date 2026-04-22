@@ -15,6 +15,7 @@ class FeatureFlagManager {
   late String _platform;
   late String _environment;
   late String _apiUrl;
+  String? _apiKey;
 
   bool _initialized = false;
 
@@ -28,11 +29,13 @@ class FeatureFlagManager {
     required String environment,
     required String platform,
     String? userId,
+    String? apiKey,
   }) async {
     _apiUrl = apiUrl;
     _environment = environment;
     _platform = platform;
     _userId = userId;
+    _apiKey = apiKey;
 
     if (!_apiUrl.endsWith('/')) {
       _apiUrl = '$_apiUrl/';
@@ -65,7 +68,12 @@ class FeatureFlagManager {
         if (_anonymousId != null) 'anonymousId': _anonymousId,
       });
 
-      final response = await http.get(uri).timeout(const Duration(seconds: 5));
+      final headers = <String, String>{};
+      if (_apiKey != null && _apiKey!.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $_apiKey';
+      }
+
+      final response = await http.get(uri, headers: headers).timeout(const Duration(seconds: 5));
       if (response.statusCode == 200) {
         _flags = jsonDecode(response.body);
       }
