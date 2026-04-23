@@ -3,6 +3,32 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+class FeatureFlagResult {
+  final dynamic value;
+  final String? variant;
+  final int bucket;
+  final bool isEnabled;
+  final String reason;
+
+  FeatureFlagResult({
+    required this.value,
+    this.variant,
+    required this.bucket,
+    required this.isEnabled,
+    required this.reason,
+  });
+
+  factory FeatureFlagResult.fromJson(Map<String, dynamic> json) {
+    return FeatureFlagResult(
+      value: json['value'],
+      variant: json['variant'],
+      bucket: json['bucket'] ?? -1,
+      isEnabled: json['is_enabled'] ?? false,
+      reason: json['reason'] ?? 'unknown',
+    );
+  }
+}
+
 class FeatureFlagManager {
   static final FeatureFlagManager _instance = FeatureFlagManager._internal();
   factory FeatureFlagManager() => _instance;
@@ -10,12 +36,15 @@ class FeatureFlagManager {
   FeatureFlagManager._internal();
 
   Map<String, dynamic> _flags = {};
+  final Set<String> _trackedFlags = {};
   String? _anonymousId;
   String? _userId;
   late String _platform;
   late String _environment;
   late String _apiUrl;
   String? _apiKey;
+
+  void Function(String key, FeatureFlagResult result)? onExposure;
 
   bool _initialized = false;
 
@@ -30,12 +59,14 @@ class FeatureFlagManager {
     required String platform,
     String? userId,
     String? apiKey,
+    void Function(String key, FeatureFlagResult result)? onExposure,
   }) async {
     _apiUrl = apiUrl;
     _environment = environment;
     _platform = platform;
     _userId = userId;
     _apiKey = apiKey;
+    this.onExposure = onExposure;
 
     if (!_apiUrl.endsWith('/')) {
       _apiUrl = '$_apiUrl/';
@@ -64,6 +95,7 @@ class FeatureFlagManager {
       final uri = Uri.parse('$_apiUrl/v1/feature-flags').replace(queryParameters: {
         'platform': _platform,
         'env': _environment,
+        'detailed': 'true',
         if (_userId != null) 'userId': _userId,
         if (_anonymousId != null) 'anonymousId': _anonymousId,
       });
@@ -84,17 +116,38 @@ class FeatureFlagManager {
 
   /// Returns true if the flag is enabled.
   bool isEnabled(String key, {bool defaultValue = false}) {
-    final value = _flags[key];
+    final result = getDetail(key);
+    if (result == null) return defaultValue;
+    
+    final value = result.value;
     if (value is bool) return value;
-    if (value == null) return defaultValue;
     return false;
   }
 
   /// Returns the value of a multivariate flag.
   T? getValue<T>(String key, {T? defaultValue}) {
-    return (_flags[key] as T?) ?? defaultValue;
+    final result = getDetail(key);
+    if (result == null) return defaultValue;
+    return (result.value as T?) ?? defaultValue;
+  }
+
+  /// Returns the detailed evaluation result of a flag.
+  FeatureFlagResult? getDetail(String key) {
+    final raw = _flags[key];
+    if (raw == null) return null;
+
+    final result = FeatureFlagResult.fromJson(raw is Map<String, dynamic> ? raw : {'value': raw});
+
+    // Track exposure if not already tracked
+    if (!_trackedFlags.contains(key)) {
+      onExposure?.call(key, result);
+      _trackedFlags.add(key);
+    }
+
+    return result;
   }
 
   bool get isInitialized => _initialized;
   String get environment => _environment;
 }
+
