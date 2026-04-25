@@ -9,6 +9,7 @@ class MovieListItem {
   final String? mediaType;
   final String? releaseDate;
   final num? popularity;
+  final bool isSponsored;
 
   MovieListItem({
     required this.id,
@@ -20,6 +21,7 @@ class MovieListItem {
     this.mediaType,
     this.releaseDate,
     this.popularity,
+    this.isSponsored = false,
   });
 
   factory MovieListItem.fromJson(Map<String, dynamic> json) {
