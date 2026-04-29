@@ -39,6 +39,8 @@ class CombinedCreditItem {
   final String? overview;
   final String? mediaType;
   final String? character;
+  final String? releaseDate;
+  final String? firstAirDate;
 
   CombinedCreditItem({
     required this.id,
@@ -49,6 +51,8 @@ class CombinedCreditItem {
     this.overview,
     this.mediaType,
     this.character,
+    this.releaseDate,
+    this.firstAirDate,
   });
 
   factory CombinedCreditItem.fromJson(Map<String, dynamic> json) {
@@ -61,6 +65,8 @@ class CombinedCreditItem {
       overview: json['overview'] as String?,
       mediaType: json['media_type'] as String?,
       character: json['character'] as String?,
+      releaseDate: json['release_date'] as String?,
+      firstAirDate: json['first_air_date'] as String?,
     );
   }
 }
