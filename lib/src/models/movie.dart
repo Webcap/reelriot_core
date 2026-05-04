@@ -28,7 +28,7 @@ class MovieListItem {
 
   factory MovieListItem.fromJson(Map<String, dynamic> json) {
     return MovieListItem(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       title: json['title'] as String?,
       posterPath: json['poster_path'] as String?,
       backdropPath: json['backdrop_path'] as String?,
@@ -56,8 +56,8 @@ class MovieListResponse {
   factory MovieListResponse.fromJson(Map<String, dynamic> json) {
     final resultsRaw = json['results'];
     return MovieListResponse(
-      page: json['page'] as int? ?? 1,
-      totalPages: json['total_pages'] as int? ?? 1,
+      page: (json['page'] as num?)?.toInt() ?? 1,
+      totalPages: (json['total_pages'] as num?)?.toInt() ?? 1,
       results: resultsRaw is List
           ? (resultsRaw)
               .map((e) => MovieListItem.fromJson(
@@ -113,7 +113,7 @@ class MovieDetail {
   factory MovieDetail.fromJson(Map<String, dynamic> json) {
     final g = json['genres'];
     return MovieDetail(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       title: json['title'] as String?,
       posterPath: json['poster_path'] as String?,
       backdropPath: json['backdrop_path'] as String?,
@@ -122,7 +122,7 @@ class MovieDetail {
       mediaType: json['media_type'] as String?,
       releaseDate: json['release_date'] as String?,
       popularity: json['popularity'] as num?,
-      runtime: json['runtime'] as int?,
+      runtime: (json['runtime'] as num?)?.toInt(),
       genres: g is List
           ? (g).map((e) => Map<String, dynamic>.from(e as Map)).toList()
           : null,
@@ -166,7 +166,7 @@ class MovieCollection {
   factory MovieCollection.fromJson(Map<String, dynamic> json) {
     final p = json['parts'];
     return MovieCollection(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       name: json['name'] as String?,
       overview: json['overview'] as String?,
       posterPath: json['poster_path'] as String?,

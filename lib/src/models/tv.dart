@@ -24,7 +24,7 @@ class TvListItem {
 
   factory TvListItem.fromJson(Map<String, dynamic> json) {
     return TvListItem(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       name: json['name'] as String?,
       posterPath: json['poster_path'] as String?,
       backdropPath: json['backdrop_path'] as String?,
@@ -51,8 +51,8 @@ class TvListResponse {
   factory TvListResponse.fromJson(Map<String, dynamic> json) {
     final resultsRaw = json['results'];
     return TvListResponse(
-      page: json['page'] as int? ?? 1,
-      totalPages: json['total_pages'] as int? ?? 1,
+      page: (json['page'] as num?)?.toInt() ?? 1,
+      totalPages: (json['total_pages'] as num?)?.toInt() ?? 1,
       results: resultsRaw is List
           ? (resultsRaw)
               .map((e) => TvListItem.fromJson(
@@ -104,7 +104,7 @@ class TvShowDetail {
   factory TvShowDetail.fromJson(Map<String, dynamic> json) {
     final g = json['genres'];
     return TvShowDetail(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       name: json['name'] as String?,
       posterPath: json['poster_path'] as String?,
       backdropPath: json['backdrop_path'] as String?,
@@ -112,7 +112,7 @@ class TvShowDetail {
       voteAverage: json['vote_average'] as num?,
       firstAirDate: json['first_air_date'] as String?,
       popularity: json['popularity'] as num?,
-      numberOfSeasons: json['number_of_seasons'] as int?,
+      numberOfSeasons: (json['number_of_seasons'] as num?)?.toInt(),
       genres: g is List
           ? (g).map((e) => Map<String, dynamic>.from(e as Map)).toList()
           : null,
@@ -150,9 +150,9 @@ class TvSeason {
 
   factory TvSeason.fromJson(Map<String, dynamic> json) {
     return TvSeason(
-      seasonNumber: json['season_number'] as int? ?? 0,
+      seasonNumber: (json['season_number'] as num?)?.toInt() ?? 0,
       name: json['name'] as String?,
-      episodeCount: json['episode_count'] as int?,
+      episodeCount: (json['episode_count'] as num?)?.toInt(),
       posterPath: json['poster_path'] as String?,
       overview: json['overview'] as String?,
     );

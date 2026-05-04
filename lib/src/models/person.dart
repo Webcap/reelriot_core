@@ -19,7 +19,7 @@ class PersonDetail {
 
   factory PersonDetail.fromJson(Map<String, dynamic> json) {
     return PersonDetail(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       name: json['name'] as String,
       biography: json['biography'] as String?,
       birthday: json['birthday'] as String?,
@@ -57,7 +57,7 @@ class CombinedCreditItem {
 
   factory CombinedCreditItem.fromJson(Map<String, dynamic> json) {
     return CombinedCreditItem(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String?,
       name: json['name'] as String?,
       posterPath: json['poster_path'] as String?,
@@ -83,7 +83,7 @@ class CombinedCreditsResponse {
   factory CombinedCreditsResponse.fromJson(Map<String, dynamic> json) {
     final castRaw = json['cast'];
     return CombinedCreditsResponse(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       cast: castRaw is List
           ? castRaw
               .map((e) => CombinedCreditItem.fromJson(Map<String, dynamic>.from(e as Map)))

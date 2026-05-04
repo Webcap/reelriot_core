@@ -15,8 +15,8 @@ class CastMember {
 
   factory CastMember.fromJson(Map<String, dynamic> json) {
     return CastMember(
-      id: json['id'] as int,
-      name: json['name'] as String,
+      id: json['id'] as int? ?? 0,
+      name: json['name'] as String? ?? 'Unknown',
       character: json['character'] as String?,
       profilePath: json['profile_path'] as String?,
       order: json['order'] as int? ?? 0,
@@ -36,7 +36,7 @@ class CreditsResponse {
   factory CreditsResponse.fromJson(Map<String, dynamic> json) {
     final castRaw = json['cast'];
     return CreditsResponse(
-      id: json['id'] as int,
+      id: json['id'] as int? ?? 0,
       cast: castRaw is List
           ? castRaw
               .map((e) => CastMember.fromJson(Map<String, dynamic>.from(e as Map)))
