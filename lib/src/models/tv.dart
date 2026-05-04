@@ -1,3 +1,5 @@
+import 'credits.dart';
+
 /// Minimal TV show list item from TMDB.
 class TvListItem {
   final int id;
@@ -73,6 +75,12 @@ class TvShowDetail {
   final num? popularity;
   final int? numberOfSeasons;
   final List<Map<String, dynamic>>? genres;
+  final List<TvSeason>? seasons;
+  final CreditsResponse? credits;
+  final TvListResponse? recommendations;
+  final String? tagline;
+  final String? status;
+  final String? type;
 
   TvShowDetail({
     required this.id,
@@ -85,6 +93,12 @@ class TvShowDetail {
     this.popularity,
     this.numberOfSeasons,
     this.genres,
+    this.seasons,
+    this.credits,
+    this.recommendations,
+    this.tagline,
+    this.status,
+    this.type,
   });
 
   factory TvShowDetail.fromJson(Map<String, dynamic> json) {
@@ -102,6 +116,18 @@ class TvShowDetail {
       genres: g is List
           ? (g).map((e) => Map<String, dynamic>.from(e as Map)).toList()
           : null,
+      seasons: json['seasons'] is List
+          ? (json['seasons'] as List).map((e) => TvSeason.fromJson(Map<String, dynamic>.from(e as Map))).toList()
+          : null,
+      credits: json['credits'] != null
+          ? CreditsResponse.fromJson(Map<String, dynamic>.from(json['credits'] as Map))
+          : null,
+      recommendations: json['recommendations'] != null
+          ? TvListResponse.fromJson(Map<String, dynamic>.from(json['recommendations'] as Map))
+          : null,
+      tagline: json['tagline'] as String?,
+      status: json['status'] as String?,
+      type: json['type'] as String?,
     );
   }
 }

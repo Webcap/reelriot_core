@@ -1,3 +1,5 @@
+import 'credits.dart';
+
 /// Minimal movie list item from TMDB (discover, popular, etc.).
 class MovieListItem {
   final int id;
@@ -80,6 +82,12 @@ class MovieDetail {
   final int? runtime;
   final List<Map<String, dynamic>>? genres;
   final Map<String, dynamic>? belongsToCollection;
+  final CreditsResponse? credits;
+  final MovieListResponse? recommendations;
+  final String? tagline;
+  final List<Map<String, dynamic>>? productionCompanies;
+  final String? status;
+  final String? homepage;
 
   MovieDetail({
     required this.id,
@@ -94,6 +102,12 @@ class MovieDetail {
     this.runtime,
     this.genres,
     this.belongsToCollection,
+    this.credits,
+    this.recommendations,
+    this.tagline,
+    this.productionCompanies,
+    this.status,
+    this.homepage,
   });
 
   factory MovieDetail.fromJson(Map<String, dynamic> json) {
@@ -115,6 +129,18 @@ class MovieDetail {
       belongsToCollection: json['belongs_to_collection'] != null
           ? Map<String, dynamic>.from(json['belongs_to_collection'] as Map)
           : null,
+      credits: json['credits'] != null
+          ? CreditsResponse.fromJson(Map<String, dynamic>.from(json['credits'] as Map))
+          : null,
+      recommendations: json['recommendations'] != null
+          ? MovieListResponse.fromJson(Map<String, dynamic>.from(json['recommendations'] as Map))
+          : null,
+      tagline: json['tagline'] as String?,
+      productionCompanies: json['production_companies'] is List
+          ? (json['production_companies'] as List).map((e) => Map<String, dynamic>.from(e as Map)).toList()
+          : null,
+      status: json['status'] as String?,
+      homepage: json['homepage'] as String?,
     );
   }
 }
