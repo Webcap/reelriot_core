@@ -4,11 +4,14 @@ import 'package:http/http.dart' as http;
 
 import 'endpoints.dart';
 
-/// Fetches app config from caffeine-api GET /config.
-/// Returns raw map; app can read caffeine_api_url, tmdb_proxy, etc.
-Future<Map<String, dynamic>> fetchConfig(String caffeineApiUrl,
-    {String? apiKey}) async {
-  final url = Uri.parse(Endpoints.configUrl(caffeineApiUrl));
+Future<Map<String, dynamic>> fetchConfig(
+  String caffeineApiUrl, {
+  String? apiKey,
+  String platform = 'tv',
+  String environment = 'prod',
+}) async {
+  final baseUrl = caffeineApiUrl.endsWith('/') ? caffeineApiUrl : '$caffeineApiUrl/';
+  final url = Uri.parse('${baseUrl}v1/feature-flags?platform=$platform&env=$environment');
   final headers = <String, String>{};
   if (apiKey != null && apiKey.isNotEmpty) {
     headers['Authorization'] = 'Bearer $apiKey';
