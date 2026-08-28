@@ -218,6 +218,20 @@ class Endpoints {
     return url;
   }
 
+  /// Unified Stream endpoint (auto-tiering & race).
+  static String unifiedStreamUrl(
+      String caffeineApiUrl, String tmdbId, String type,
+      {int? season, int? episode, String? language, String? country, String? preferredProvider}) {
+    final base = _b(caffeineApiUrl);
+    String url = '$base/v1/stream?tmdbId=$tmdbId&type=$type';
+    if (season != null) url += '&season=$season';
+    if (episode != null) url += '&episode=$episode';
+    if (language != null) url += '&language=$language';
+    if (country != null) url += '&country=$country';
+    if (preferredProvider != null) url += '&provider=$preferredProvider';
+    return url;
+  }
+
   /// List providers (optional).
   static String providersUrl(String caffeineApiUrl) {
     return '${_b(caffeineApiUrl)}providers';
