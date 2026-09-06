@@ -236,4 +236,9 @@ class Endpoints {
   static String providersUrl(String caffeineApiUrl) {
     return '${_b(caffeineApiUrl)}providers';
   }
+
+  /// Media quality resolution endpoint (/v1/quality/:type/:id).
+  static String qualityUrl(String caffeineApiUrl, String type, int id) {
+    return '${_b(caffeineApiUrl)}v1/quality/$type/$id';
+  }
 }
