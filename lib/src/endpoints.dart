@@ -189,8 +189,31 @@ class Endpoints {
   }
 
   /// New structured updates endpoint.
-  static String updatesUrl(String caffeineApiUrl, String platform, {String environment = 'prod'}) {
-    return '${_b(caffeineApiUrl)}v1/updates?platform=$platform&environment=$environment';
+  static String updatesUrl(String caffeineApiUrl, String platform, {
+    String environment = 'prod',
+    String? clientVersion,
+    String? userId,
+    String? anonymousId,
+  }) {
+    final params = <String>[
+      'platform=$platform',
+      'environment=$environment',
+    ];
+    if (clientVersion != null && clientVersion.isNotEmpty) {
+      params.add('client_version=${Uri.encodeComponent(clientVersion)}');
+    }
+    if (userId != null && userId.isNotEmpty) {
+      params.add('userId=${Uri.encodeComponent(userId)}');
+    }
+    if (anonymousId != null && anonymousId.isNotEmpty) {
+      params.add('anonymousId=${Uri.encodeComponent(anonymousId)}');
+    }
+    return '${_b(caffeineApiUrl)}v1/updates?${params.join('&')}';
+  }
+
+  /// App update telemetry ingestion endpoint.
+  static String updateTelemetryUrl(String caffeineApiUrl) {
+    return '${_b(caffeineApiUrl)}v1/updates/telemetry';
   }
 
   /// Admin updates endpoint.

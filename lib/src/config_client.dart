@@ -36,15 +36,30 @@ Future<AppUpdateInfo?> fetchUpdateInfo({
   required String caffeineApiUrl,
   required String platform,
   String environment = 'prod',
+  String? clientVersion,
+  String? userId,
+  String? anonymousId,
   String? apiKey,
 }) async {
   try {
     final url = Uri.parse(
-        Endpoints.updatesUrl(caffeineApiUrl, platform, environment: environment));
+      Endpoints.updatesUrl(
+        caffeineApiUrl,
+        platform,
+        environment: environment,
+        clientVersion: clientVersion,
+        userId: userId,
+        anonymousId: anonymousId,
+      ),
+    );
 
     final headers = <String, String>{};
     if (apiKey != null && apiKey.isNotEmpty) {
       headers['Authorization'] = 'Bearer $apiKey';
+      headers['x-api-key'] = apiKey;
+    }
+    if (clientVersion != null && clientVersion.isNotEmpty) {
+      headers['x-app-version'] = clientVersion;
     }
 
     final response =
@@ -58,6 +73,46 @@ Future<AppUpdateInfo?> fetchUpdateInfo({
     // Silently fail or log, as updates shouldn't block the app usually
   }
   return null;
+}
+
+/// Records client update telemetry event to /v1/updates/telemetry.
+Future<bool> sendUpdateTelemetry({
+  required String caffeineApiUrl,
+  required String platform,
+  required String clientVersion,
+  required String eventType, // 'version_check', 'forced_prompt_shown', 'update_download_clicked'
+  String environment = 'production',
+  String? deviceId,
+  bool isForcedPrompt = false,
+  String? apiKey,
+}) async {
+  try {
+    final url = Uri.parse(Endpoints.updateTelemetryUrl(caffeineApiUrl));
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+    if (apiKey != null && apiKey.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $apiKey';
+      headers['x-api-key'] = apiKey;
+    }
+
+    final body = jsonEncode({
+      'platform': platform,
+      'environment': environment,
+      'client_version': clientVersion,
+      'device_id': deviceId,
+      'event_type': eventType,
+      'is_forced_prompt': isForcedPrompt,
+    });
+
+    final response = await http
+        .post(url, headers: headers, body: body)
+        .timeout(const Duration(seconds: 5));
+
+    return response.statusCode == 200;
+  } catch (_) {
+    return false;
+  }
 }
 
 /// Typed config values relevant for TV app (and main app).
