@@ -27,15 +27,17 @@ class MovieListItem {
   });
 
   factory MovieListItem.fromJson(Map<String, dynamic> json) {
+    final rawId = json['id'] ?? json['tmdb_id'] ?? json['tmdbId'];
+    final id = rawId is int ? rawId : int.tryParse(rawId?.toString() ?? '') ?? 0;
     return MovieListItem(
-      id: json['id'] as int? ?? 0,
-      title: json['title'] as String?,
-      posterPath: json['poster_path'] as String?,
-      backdropPath: json['backdrop_path'] as String?,
+      id: id,
+      title: (json['title'] ?? json['name']) as String?,
+      posterPath: (json['poster_path'] ?? json['posterPath']) as String?,
+      backdropPath: (json['backdrop_path'] ?? json['backdropPath']) as String?,
       overview: json['overview'] as String?,
-      voteAverage: json['vote_average'] as num?,
-      mediaType: json['media_type'] as String?,
-      releaseDate: json['release_date'] as String?,
+      voteAverage: (json['vote_average'] ?? json['voteAverage']) as num?,
+      mediaType: (json['media_type'] ?? json['mediaType']) as String?,
+      releaseDate: (json['release_date'] ?? json['first_air_date']) as String?,
       popularity: json['popularity'] as num?,
     );
   }
