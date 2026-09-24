@@ -36,6 +36,8 @@ Future<AppUpdateInfo?> fetchUpdateInfo({
   required String caffeineApiUrl,
   required String platform,
   String environment = 'prod',
+  String buildChannel = 'stable',
+  String? betaKey,
   String? clientVersion,
   String? userId,
   String? anonymousId,
@@ -47,6 +49,8 @@ Future<AppUpdateInfo?> fetchUpdateInfo({
         caffeineApiUrl,
         platform,
         environment: environment,
+        buildChannel: buildChannel,
+        betaKey: betaKey,
         clientVersion: clientVersion,
         userId: userId,
         anonymousId: anonymousId,
@@ -55,8 +59,8 @@ Future<AppUpdateInfo?> fetchUpdateInfo({
 
     final headers = <String, String>{};
     if (apiKey != null && apiKey.isNotEmpty) {
+      // Use only Authorization: Bearer — x-api-key is redundant and exposes the key twice.
       headers['Authorization'] = 'Bearer $apiKey';
-      headers['x-api-key'] = apiKey;
     }
     if (clientVersion != null && clientVersion.isNotEmpty) {
       headers['x-app-version'] = clientVersion;
@@ -92,8 +96,8 @@ Future<bool> sendUpdateTelemetry({
       'Content-Type': 'application/json',
     };
     if (apiKey != null && apiKey.isNotEmpty) {
+      // Use only Authorization: Bearer — x-api-key is redundant.
       headers['Authorization'] = 'Bearer $apiKey';
-      headers['x-api-key'] = apiKey;
     }
 
     final body = jsonEncode({
@@ -120,22 +124,38 @@ class CaffeineApiConfig {
   final String caffeineApiUrl;
   final String? consumetUrl;
   final String? tmdbProxy;
+
+  /// @Deprecated Use the structured /v1/updates endpoint instead.
+  /// These fields are retained for backward compatibility but are no longer
+  /// read by the TV app or populated by the API config endpoint.
+  @Deprecated('Use structured /v1/updates endpoint via UpdateService.checkForUpdate()')
   final String? latestVersion;
+  @Deprecated('Use structured /v1/updates endpoint via UpdateService.checkForUpdate()')
   final bool? forcedUpdate;
+  @Deprecated('Use structured /v1/updates endpoint via UpdateService.checkForUpdate()')
   final String? tvLatestVersion;
+  @Deprecated('Use structured /v1/updates endpoint via UpdateService.checkForUpdate()')
   final bool? tvForcedUpdate;
+  @Deprecated('Use structured /v1/updates endpoint via UpdateService.checkForUpdate()')
   final String? tvUpdateDownloadUrl;
+  @Deprecated('Use structured /v1/updates endpoint via UpdateService.checkForUpdate()')
   final String? tvUpdateChangelog;
  
   CaffeineApiConfig({
     required this.caffeineApiUrl,
     this.consumetUrl,
     this.tmdbProxy,
+    // ignore: deprecated_member_use_from_same_package
     this.latestVersion,
+    // ignore: deprecated_member_use_from_same_package
     this.forcedUpdate,
+    // ignore: deprecated_member_use_from_same_package
     this.tvLatestVersion,
+    // ignore: deprecated_member_use_from_same_package
     this.tvForcedUpdate,
+    // ignore: deprecated_member_use_from_same_package
     this.tvUpdateDownloadUrl,
+    // ignore: deprecated_member_use_from_same_package
     this.tvUpdateChangelog,
   });
 
@@ -176,6 +196,9 @@ class AppUpdateInfo {
   final String? downloadUrl;
   final String? storeUrl;
   final String? changelog;
+  final String buildChannel;
+  final String? releaseTag;
+  final String? buildNotes;
 
   AppUpdateInfo({
     required this.platform,
@@ -185,17 +208,50 @@ class AppUpdateInfo {
     this.downloadUrl,
     this.storeUrl,
     this.changelog,
+    this.buildChannel = 'stable',
+    this.releaseTag,
+    this.buildNotes,
   });
 
   factory AppUpdateInfo.fromMap(Map<String, dynamic> map) {
+    // Support both explicit update_available flag (rollout exclusion responses)
+    // and presence of latest_version (standard update response).
+    final updateAvailable = map['update_available'];
+    if (updateAvailable == false) {
+      // Rollout exclusion or explicit no-update signal — return a null sentinel.
+      // Callers should treat a null return from fetchUpdateInfo as no update.
+      return AppUpdateInfo(
+        platform: map['platform']?.toString() ?? '',
+        environment: map['environment']?.toString() ?? '',
+        latestVersion: '',
+        isForced: false,
+        buildChannel: map['build_channel']?.toString() ?? 'stable',
+      );
+    }
+
+    // Phase 2.5: Fall back to download_urls.universal if download_url is absent.
+    final rawDownloadUrl = map['download_url']?.toString();
+    final downloadUrlsMap = map['download_urls'] as Map?;
+    String? fallbackUrl;
+    if (downloadUrlsMap != null && downloadUrlsMap.isNotEmpty) {
+      fallbackUrl = downloadUrlsMap['universal']?.toString() ??
+          downloadUrlsMap.values.first.toString();
+    }
+    final resolvedDownloadUrl = rawDownloadUrl?.isNotEmpty == true
+        ? rawDownloadUrl
+        : fallbackUrl;
+
     return AppUpdateInfo(
-      platform: map['platform'].toString(),
-      environment: map['environment'].toString(),
-      latestVersion: map['latest_version'].toString(),
+      platform: map['platform']?.toString() ?? '',
+      environment: map['environment']?.toString() ?? '',
+      latestVersion: map['latest_version']?.toString() ?? '',
       isForced: map['is_forced'] == true,
-      downloadUrl: map['download_url']?.toString(),
+      downloadUrl: resolvedDownloadUrl,
       storeUrl: map['store_url']?.toString(),
       changelog: map['changelog']?.toString(),
+      buildChannel: map['build_channel']?.toString() ?? 'stable',
+      releaseTag: map['release_tag']?.toString(),
+      buildNotes: map['build_notes']?.toString(),
     );
   }
 }

@@ -191,6 +191,8 @@ class Endpoints {
   /// New structured updates endpoint.
   static String updatesUrl(String caffeineApiUrl, String platform, {
     String environment = 'prod',
+    String buildChannel = 'stable',
+    String? betaKey,
     String? clientVersion,
     String? userId,
     String? anonymousId,
@@ -198,7 +200,11 @@ class Endpoints {
     final params = <String>[
       'platform=$platform',
       'environment=$environment',
+      'build_channel=$buildChannel',
     ];
+    if (betaKey != null && betaKey.isNotEmpty) {
+      params.add('beta_key=${Uri.encodeComponent(betaKey)}');
+    }
     if (clientVersion != null && clientVersion.isNotEmpty) {
       params.add('client_version=${Uri.encodeComponent(clientVersion)}');
     }
@@ -209,6 +215,11 @@ class Endpoints {
       params.add('anonymousId=${Uri.encodeComponent(anonymousId)}');
     }
     return '${_b(caffeineApiUrl)}v1/updates?${params.join('&')}';
+  }
+
+  /// App build channels listing endpoint.
+  static String channelsUrl(String caffeineApiUrl, String platform, {String environment = 'prod'}) {
+    return '${_b(caffeineApiUrl)}v1/updates/channels?platform=$platform&environment=$environment';
   }
 
   /// App update telemetry ingestion endpoint.
