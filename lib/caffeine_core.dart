@@ -9,3 +9,4 @@ export 'src/models/stream_link.dart';
 export 'src/models/tv.dart';
 export 'src/models/person.dart';
 export 'src/feature_service.dart';
+export 'src/avatar_utils.dart';
